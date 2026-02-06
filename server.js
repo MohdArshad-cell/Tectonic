@@ -43,12 +43,13 @@ app.post('/generate-latex', async (req, res) => {
         Rewrite the provided RESUME content to perfectly match the JOB DESCRIPTION.
         Output valid, compilable LaTeX code.
         
-        RULES:
-        1. Use a clean, professional LaTeX template (e.g., using 'article' or 'resume' class).
-        2. Use standard packages only (geometry, enumitem, hyperref, fontawesome).
-        3. Do NOT use Markdown formatting (no \`\`\`latex blocks). Return RAW LaTeX only.
-        4. Ensure all brackets {} and environments are closed properly.
-        5. Make the resume 1 page if possible.
+        CRITICAL RULES (Follow Strictly):
+        1. Use the standard 'article' class.
+        2. DO NOT use custom commands like \\resumeItem, \\cventry, or \\resumeSubheading. 
+        3. Use standard LaTeX commands ONLY: \\section{}, \\textbf{}, \\textit{}, \\begin{itemize} ... \\end{itemize}.
+        4. Ensure every opening bracket '{' has a closing bracket '}'.
+        5. Do not leave the code incomplete.
+        6. NO Markdown blocks (return raw code).
 
         RESUME INPUT:
         ${currentResume}
