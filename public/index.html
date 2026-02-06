@@ -3,290 +3,352 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AplyEase PDF Engine (Tectonic)</title>
+    <title>AplyEase AI Architect</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         :root {
-            --primary: #2563eb;       /* Professional Blue */
-            --primary-hover: #1d4ed8;
-            --bg: #0f172a;           /* Dark Slate Bg */
-            --editor-bg: #1e293b;    /* Slightly lighter for editor */
-            --text: #f8fafc;
-            --border: #334155;
+            --bg-dark: #09090b;
+            --bg-panel: #18181b;
+            --border: #27272a;
+            --primary: #3b82f6;
+            --primary-glow: rgba(59, 130, 246, 0.5);
+            --ai-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --text-main: #e4e4e7;
+            --text-muted: #a1a1aa;
         }
 
+        * { box-sizing: border-box; outline: none; }
+
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
             height: 100vh;
             display: flex;
             flex-direction: column;
-            background: var(--bg);
-            color: var(--text);
             overflow: hidden;
         }
 
-        /* Header */
+        /* --- Header --- */
         header {
             height: 60px;
-            background: #020617;
+            background: rgba(9, 9, 11, 0.8);
+            backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
-            padding: 0 24px;
             justify-content: space-between;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 0 24px;
             z-index: 10;
         }
 
-        .brand {
+        .logo {
             font-weight: 700;
-            font-size: 1.25rem;
+            font-size: 18px;
+            letter-spacing: -0.5px;
             display: flex;
             align-items: center;
             gap: 10px;
-            color: white;
         }
+
+        .logo i { background: var(--ai-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 20px; }
         
-        .brand span { color: var(--primary); }
-
-        .status-badge {
-            font-size: 0.8rem;
-            padding: 4px 12px;
+        .badge {
+            font-size: 12px;
+            padding: 4px 10px;
             border-radius: 20px;
-            background: rgba(34, 197, 94, 0.1); /* Green tint */
-            color: #4ade80; /* Green text */
-            border: 1px solid #22c55e;
-            font-weight: 600;
-            letter-spacing: 0.5px;
+            background: rgba(16, 185, 129, 0.1);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            font-weight: 500;
         }
 
-        /* Main Layout */
-        main {
-            display: flex;
-            flex: 1;
+        /* --- Main Layout --- */
+        .workspace {
+            display: grid;
+            grid-template-columns: 320px 1fr 45%;
             height: calc(100vh - 60px);
         }
 
-        /* Editor Section (Left) */
-        .editor-pane {
-            width: 50%;
+        /* --- Panel 1: AI Inputs --- */
+        .panel-inputs {
+            background: var(--bg-dark);
+            border-right: 1px solid var(--border);
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            border-right: 1px solid var(--border);
-            background: var(--editor-bg);
+            gap: 20px;
+            overflow-y: auto;
         }
 
-        .editor-header {
-            padding: 10px 20px;
-            background: #0f172a;
-            color: #94a3b8;
-            font-size: 0.85rem;
-            font-weight: 600;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border);
+        .section-title {
+            font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 1px;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-box {
+            display: flex;
+            flex-direction: column;
         }
 
         textarea {
-            flex: 1;
-            background: var(--editor-bg);
-            color: #e2e8f0;
-            border: none;
-            padding: 20px;
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-radius: 8px;
+            padding: 12px;
+            font-family: 'Inter', sans-serif;
             font-size: 14px;
-            line-height: 1.6;
-            resize: none;
-            outline: none;
+            resize: vertical;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
-        /* Scrollbar styling */
-        textarea::-webkit-scrollbar { width: 10px; }
-        textarea::-webkit-scrollbar-track { background: var(--editor-bg); }
-        textarea::-webkit-scrollbar-thumb { background: #475569; border-radius: 5px; }
-
-        .actions {
-            padding: 16px;
-            background: #0f172a;
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: flex-end;
+        textarea:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
         }
 
-        button {
-            background: var(--primary);
+        .btn-ai {
+            background: var(--ai-gradient);
             color: white;
             border: none;
-            padding: 12px 28px;
-            border-radius: 6px;
+            padding: 14px;
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
-            font-size: 0.95rem;
-            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
         }
 
-        button:hover { 
-            background: var(--primary-hover); 
-            transform: translateY(-1px);
-            box-shadow: 0 6px 8px -1px rgba(37, 99, 235, 0.3);
-        }
-        
-        button:disabled { 
-            background: #334155; 
-            color: #94a3b8;
-            cursor: not-allowed; 
-            transform: none; 
-            box-shadow: none;
-        }
+        .btn-ai:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4); }
+        .btn-ai:active { transform: translateY(1px); }
+        .btn-ai:disabled { opacity: 0.7; cursor: wait; transform: none; }
 
-        /* Preview Section (Right) */
-        .preview-pane {
-            flex: 1;
-            background: #525659; /* Standard PDF Viewer Grey */
+        /* --- Panel 2: Code Editor --- */
+        .panel-editor {
+            background: #1e1e20;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
             position: relative;
         }
 
-        iframe {
-            width: 100%;
-            height: 100%;
+        .editor-toolbar {
+            height: 40px;
+            background: var(--bg-panel);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+        }
+
+        .file-name { font-size: 13px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+
+        #latexCode {
+            flex: 1;
+            background: #1e1e20;
             border: none;
+            color: #d4d4d8;
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            resize: none;
         }
 
-        /* Empty State Overlay */
-        .empty-state {
+        .btn-compile {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: #cbd5e1;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 4px 12px var(--primary-glow);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 5;
         }
+
+        .btn-compile:hover { background: #2563eb; transform: translateY(-1px); }
+
+        /* --- Panel 3: Preview --- */
+        .panel-preview {
+            background: #525659;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        iframe { width: 100%; height: 100%; border: none; }
+
+        /* Utility */
+        .hidden { display: none; }
         
-        .empty-icon { font-size: 3rem; margin-bottom: 10px; display: block; opacity: 0.5; }
-
-        /* Spinner Animation */
-        .spinner {
-            width: 18px;
-            height: 18px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 0.8s ease-in-out infinite;
-            display: none;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
+        /* Loading Animation */
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        .pulsing { animation: pulse 1.5s infinite; }
 
     </style>
 </head>
 <body>
+
     <header>
-        <div class="brand">
-            ⚡ AplyEase <span>Engine</span>
+        <div class="logo">
+            <i class="fa-solid fa-bolt"></i>
+            AplyEase Engine <span style="font-weight:400; color:var(--text-muted); margin-left:5px;">| AI Prototype</span>
         </div>
-        <div class="status-badge">● Tectonic System Active</div>
+        <div class="badge">● System Online</div>
     </header>
 
-    <main>
-        <div class="editor-pane">
-            <div class="editor-header">
-                <span><i class="fa fa-code"></i> LaTeX Editor</span>
-                <span style="opacity: 0.6">resume.tex</span>
+    <div class="workspace">
+        
+        <div class="panel-inputs">
+            <div>
+                <div class="section-title"><i class="fa-solid fa-user"></i> Candidate Profile</div>
+                <textarea id="resumeTxt" rows="6" placeholder="Paste current resume content here..."></textarea>
             </div>
             
-            <textarea id="latexInput" spellcheck="false">\documentclass{article}
+            <div>
+                <div class="section-title"><i class="fa-solid fa-briefcase"></i> Target Job</div>
+                <textarea id="jdTxt" rows="6" placeholder="Paste job description (JD) here..."></textarea>
+            </div>
+
+            <button class="btn-ai" onclick="generateWithAI()" id="aiBtn">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> 
+                <span>Optimize & Build Resume</span>
+            </button>
+        </div>
+
+        <div class="panel-editor">
+            <div class="editor-toolbar">
+                <span class="file-name">resume.tex</span>
+                <span style="font-size:11px; color:#52525b;">Auto-Generated LaTeX</span>
+            </div>
+            <textarea id="latexCode" spellcheck="false">\documentclass{article}
 \usepackage[utf8]{inputenc}
 \usepackage{geometry}
-\usepackage{fontawesome}
-\usepackage{xcolor}
-
 \geometry{a4paper, margin=1in}
 
-\title{\textbf{AplyEase Official Resume}}
-\author{Powered by Tectonic Engine}
-\date{\today}
-
 \begin{document}
-
-\maketitle
-
-\section*{Objective}
-This document demonstrates the power of our new \textbf{Standalone PDF Engine}. No dependencies on Overleaf, fully automated, and secure.
-
-\section*{System Capabilities}
-\begin{itemize}
-    \item \textbf{High Speed:} Compiles PDFs in seconds.
-    \item \textbf{Secure:} Data never leaves our private server.
-    \item \textbf{Scalable:} Dockerized for easy deployment on Render/Railway.
-\end{itemize}
-
-\vspace{1cm}
-\centerline{\large \textbf{Status: Ready for Production 🚀}}
-
+    \section*{Welcome to AplyEase AI}
+    \begin{itemize}
+        \item Paste your Resume & JD on the left.
+        \item Click the \textbf{Purple Magic Button}.
+        \item Watch the AI write code here & compile PDF there $\rightarrow$
+    \end{itemize}
 \end{document}</textarea>
             
-            <div class="actions">
-                <button onclick="generatePDF()" id="genBtn">
-                    <div class="spinner" id="spinner"></div>
-                    <span id="btnText">Generate PDF</span>
-                </button>
-            </div>
+            <button class="btn-compile" onclick="compilePDF()" id="compileBtn">
+                <i class="fa-solid fa-play"></i> Update PDF
+            </button>
         </div>
 
-        <div class="preview-pane">
+        <div class="panel-preview">
             <iframe id="pdfFrame"></iframe>
-            <div class="empty-state" id="emptyState">
-                <span class="empty-icon">📄</span>
-                <p>Ready to compile.<br>Click the button below to preview.</p>
-            </div>
         </div>
-    </main>
+
+    </div>
 
     <script>
-        async function generatePDF() {
-            const btn = document.getElementById('genBtn');
-            const btnText = document.getElementById('btnText');
-            const spinner = document.getElementById('spinner');
-            const latex = document.getElementById('latexInput').value;
-            const iframe = document.getElementById('pdfFrame');
-            const emptyState = document.getElementById('emptyState');
+        // --- Logic Remains Same, UI Updated ---
 
-            // 1. UI Loading State
+        async function generateWithAI() {
+            const btn = document.getElementById('aiBtn');
+            const btnText = btn.querySelector('span');
+            const icon = btn.querySelector('i');
+            const resume = document.getElementById('resumeTxt').value;
+            const jd = document.getElementById('jdTxt').value;
+            const editor = document.getElementById('latexCode');
+
+            if (!resume || !jd) {
+                alert("Please provide both Resume content and Job Description.");
+                return;
+            }
+
+            // Loading State
             btn.disabled = true;
-            btnText.textContent = "Compiling...";
-            spinner.style.display = "block";
+            btnText.innerText = "Analyzing & Writing...";
+            icon.classList.remove('fa-wand-magic-sparkles');
+            icon.classList.add('fa-spinner', 'fa-spin');
             
             try {
-                // 2. Call API
+                const res = await fetch('/generate-latex', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ currentResume: resume, jobDescription: jd })
+                });
+
+                const data = await res.json();
+                
+                if (data.latex) {
+                    editor.value = data.latex;
+                    // Auto-compile
+                    compilePDF(); 
+                } else {
+                    alert("AI Error: " + (data.message || "Unknown error"));
+                }
+            } catch (error) {
+                alert("Server Connection Failed");
+            } finally {
+                // Reset State
+                btn.disabled = false;
+                btnText.innerText = "Optimize & Build Resume";
+                icon.classList.remove('fa-spinner', 'fa-spin');
+                icon.classList.add('fa-wand-magic-sparkles');
+            }
+        }
+
+        async function compilePDF() {
+            const btn = document.getElementById('compileBtn');
+            const originalText = btn.innerHTML;
+            const latex = document.getElementById('latexCode').value;
+            const iframe = document.getElementById('pdfFrame');
+
+            // Loading State
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Building...';
+            btn.disabled = true;
+
+            try {
                 const res = await fetch('/generate-pdf', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ latex })
                 });
 
-                if (!res.ok) {
-                    const err = await res.json();
-                    alert("⚠️ Compilation Failed:\n" + (err.details || err.message));
-                } else {
-                    // 3. Show PDF
+                if (res.ok) {
                     const blob = await res.blob();
                     iframe.src = URL.createObjectURL(blob);
-                    emptyState.style.display = 'none'; // Hide "Ready" text
+                } else {
+                    const err = await res.json();
+                    alert("PDF Error: " + (err.details || "Syntax Error"));
                 }
-            } catch (e) {
-                alert("❌ Connection Error: Is the server running?");
+            } catch (error) {
+                alert("Server Connection Failed");
             } finally {
-                // 4. Reset Button
+                btn.innerHTML = originalText;
                 btn.disabled = false;
-                btnText.textContent = "Generate PDF";
-                spinner.style.display = "none";
             }
         }
     </script>
