@@ -1,6 +1,6 @@
 # AI-Powered Backend Service
 
-![Project Banner](https://via.placeholder.com/1200x400?text=AI-Powered+Backend+Service)
+![Project Banner](https://img.shields.io/badge/AI%20Powered%20Backend%20Service-Portfolio%202.0-black?style=for-the-badge)
 
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat&logo=node.js&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white) ![Express.js](https://img.shields.io/badge/Express.js-000000?style=flat&logo=express&logoColor=white) ![Google Generative AI](https://img.shields.io/badge/Google_Generative_AI-4285F4?style=flat&logo=google&logoColor=white) ![CORS](https://img.shields.io/badge/CORS-1A1A1A?style=flat&logo=googlechrome&logoColor=white) ![Dotenv](https://img.shields.io/badge/Dotenv-ECD53F?style=flat&logo=dotenv&logoColor=white)
 
