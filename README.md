@@ -72,9 +72,9 @@ The API will typically be accessible at `http://localhost:3000` (or configured p
 
 This project is meticulously crafted to deliver a high-quality, performant backend solution. For any inquiries, collaborations, or further technical discussions, please reach out via the following channels:
 
-*   📧 Email: `your.email@example.com`
-*   📱 WhatsApp: `+1234567890`
-*   📍 Location: `Your City, Your Country`
+*   📧 Email: arshadmohd8574@gmail.com`
+*   📱 WhatsApp: `+91 7887096421`
+*   📍 Location: `Lucknow , India`
 
 ---
 
